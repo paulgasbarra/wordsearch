@@ -1,8 +1,8 @@
-var tiles = 8;
+var tiles = 6;
 var tileWidth = 50;
 var tileMargin = 1;
 var words = ["book", "food", "goop"];
-var gameBoardWidth = tiles * tileWidth + (tiles*tileMargin*4);
+var gameBoardWidth = tiles * tileWidth;
 
 // directions: horizontal, vertical, downstairs, upstairs
 
@@ -17,8 +17,8 @@ function randomLetter() {
 }
 
 function buildGrid() {
-  $(".game-board").css("background-color", "blue");
   $("body").append("<div class=game-board></div>");
+
   for (var i = 0; i < tiles; i++){
     for(var j = 0; j < tiles; j++){
       $( ".game-board" ).append( "<div class=card id = "+i+"_"+j+"></div>" );
@@ -26,6 +26,7 @@ function buildGrid() {
       $("#"+i+"_"+j).html(letter);
     }
   }
+    $(".game-board").css("width", "gameBoardWidth");
 }
 
 function placeWord(word){
@@ -115,7 +116,6 @@ function highlightWord (firstClicked, secondClicked) {
           }
         }
       }
-      isWord(firstclicked, secondClicked);
   } else {
     console.log("Invalid Selection");
   }
