@@ -30,9 +30,12 @@ function buildGrid() {
 }
 
 function placeWord(word){
+  //throwing in random word for fun
   word = words[Math.floor(Math.random()*words.length)];
+  //word is horizontal for now
   row = Math.floor(Math.random()*tiles);
   col = Math.floor(Math.random()*(tiles-word.length));
+  //mark word start and word end to each
   $("#" + row + "_" + col).addClass("wordStart");
   $("#" + row + "-" + (col+word.length-1)).addClass("wordEnd");
   for (var i = 0; i < word.length; i++){
