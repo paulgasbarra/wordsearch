@@ -28,4 +28,13 @@
   background-color: orange;
 }
 
+.word{
+    font-family: "Arial";
+    text-transform: uppercase;
+}
+
+.word.found{
+    text-decoration: line-through;
+}
+
 

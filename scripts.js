@@ -5,13 +5,15 @@ var words = ["book", "food", "goop"];
 var gameBoardWidth = tiles * tileWidth;
 
 
+//you probably want contructors here.
+
 var words = [
             ["scope", "0_1", "0_5"],
             ["coat", "0_2", "2_3"],
-            ["heart","",""],
-            ["ran", "", ""],
-            ["hope", "", ""],
-            ["escape","",""]
+            ["heart","2_0","2_4"],
+            ["ran", "2_3", "4_5"],
+            ["hope", "2_0", "5_0"],
+            ["escape","5_0","5_5"]
             ];
 var wordGrid =
         [
@@ -61,13 +63,19 @@ function buildGrid() {
     $(".game-board").css("width", "gameBoardWidth");
 }
 
+function listWords(words){
+    words.map(function (word) {
+        $("body").append('<div class="word">'+word[0]+'</div>');
+    })
+}
+
 function placeWords(wordGrid){
   //throwing in random word for fun
   //word = words[Math.floor(Math.random()*words.length)];
   ////word is horizontal for now
   //row = Math.floor(Math.random()*tiles);
   //col = Math.floor(Math.random()*(tiles-word.length));
-  //mark word start and word end to each
+  //mark word start and word end to eachgit
   //$("#" + row + "_" + col).addClass("wordStart");
   //$("#" + row + "_" + (col+word.length-1)).addClass("wordEnd");
   //for (var i = 0; i < word.length; i++){
@@ -189,6 +197,7 @@ function choose(tileID){
 $(function(){
   buildGrid();
   placeWords(wordGrid);
+  listWords(words);
   $(".card").click(function () {
       var word = $("#"+this.id).html();
       console.log("currentTile="+this.id);
