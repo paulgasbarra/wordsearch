@@ -1,58 +1,45 @@
 var tiles = 6;
 var tileWidth = 50;
 var tileMargin = 1;
-var words = ["book", "food", "goop"];
 var gameBoardWidth = tiles * tileWidth;
 
+function Word(word, startX, startY, endX, endY, order, condition){
+    this.word = word;
+    this.startX = startX;
+    this.startY = startY;
+    this.endX = endX;
+    this.endY = endY;
+    this.order = order;
+    this.condition = condition;
+}
 
-//you probably want contructors here.
+//Construction of words assumes that the start and end coordinates make sense.
+words = [
+    ["scope", 0, 1, 0, 5, "forwards", "hidden"],
+    ["coat", 0, 2, 3, 2, "forwards", "hidden"],
+    ["heart",2, 0, 2, 4, "forwards", "hidden"],
+    ["ran", 2, 3, 4, 5, "forwards", "hidden"],
+    ["hope", 2, 0, 5, 0, "forwards", "hidden"],
+    ["escape", 5, 0, 5, 5, "forwards", "hidden"]
+];
 
-var words = [
-            ["scope", "0_1", "0_5"],
-            ["coat", "0_2", "2_3"],
-            ["heart","2_0","2_4"],
-            ["ran", "2_3", "4_5"],
-            ["hope", "2_0", "5_0"],
-            ["escape","5_0","5_5"]
-            ];
-var wordGrid =
-        [
-            [ "", "S", "C", "O", "P", "E"],
-            ["", "", "O", "", "", ""],
-            ["H", "E", "A", "R", "T", ""],
-            ["O", "", "T", "", "A", ""],
-            ["P", "", "", "", "", "N"],
-            ["E", "S", "C", "A", "P", "E"]
-        ];
-
-var wordStart =
-    [
-        [0, 1, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0],
-        [2, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0],
-        [1, 0, 0, 0, 0, 0]
-    ];
-
-var wordEnd =
-    [
-        [0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0],
-        [0, 0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 1]
-    ];
+function buildWords(words){
+    var wordArr = [];
+    for (var i = 0; i < words.length; i++){
+        var word = new Word(words[i][0], words[i][1], words[i][2], words[i][3], words[i][4], words[i][5], words[i][6]);
+        wordArr.push(word);
+    }
+    console.log(wordArr);
+    return wordArr;
+}
 
 function randomLetter() {
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  return possible.charAt(Math.floor(Math.random() * possible.length));
+  var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  return alpha.charAt(Math.floor(Math.random() * alpha.length));
 }
 
 function buildGrid() {
   $("body").append("<div class=game-board></div>");
-
   for (var i = 0; i < tiles; i++){
     for(var j = 0; j < tiles; j++){
         var tileID = i + "_" + j;
@@ -63,53 +50,56 @@ function buildGrid() {
     $(".game-board").css("width", "gameBoardWidth");
 }
 
-function listWords(words){
-    words.map(function (word) {
-        $("body").append('<div class="word">'+word[0]+'</div>');
-    })
+function setIncrement(word){
+    //vertical
+    if (word.startX == word.endX){
+        incrementer = [0,1];
+        return incrementer;
+    }
+    //horizontal
+    else if (word.startY == word.endY){
+        incrementer = [1,0];
+        return incrementer;
+    }
+    //diagonal
+    else if ((word.endX - word.startX) == (word.endY - word.startY)){
+        incrementer = [1,1];
+        return incrementer;
+    } else {
+        console.log("Major Fuckery!")
+    }
 }
 
-function placeWords(wordGrid){
-  //throwing in random word for fun
-  //word = words[Math.floor(Math.random()*words.length)];
-  ////word is horizontal for now
-  //row = Math.floor(Math.random()*tiles);
-  //col = Math.floor(Math.random()*(tiles-word.length));
-  //mark word start and word end to eachgit
-  //$("#" + row + "_" + col).addClass("wordStart");
-  //$("#" + row + "_" + (col+word.length-1)).addClass("wordEnd");
-  //for (var i = 0; i < word.length; i++){
-  //  $("#" + row + "_" + (col+i)).html(word[i].toUpperCase());
-  //}
-    for (var i = 0; i < tiles; i++){
-        for (var j = 0; j < tiles; j++){
-            $("#" + i + "_" + j ).html(wordGrid[i][j]);
-            if ($("#" + i + "_" + j ).html()===""){
-                $("#" + i + "_" + j ).html(randomLetter());
+function placeWords(words){
+    for (var i = 0; i < words.length; i++){
+        var word = words[i];
+        var x = 0;
+        var y = 0;
+        incrementer = setIncrement(words[i]);
+        for (var j = 0; j < word.word.length; j++){
+            //mark tile as word start, associate with word.
+            $('#' + (word.startX + x) + "_" + (word.startY + y)).html(word.word[j]);
+            if (j == 0){
+                $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("word_start");
+            } else if (j == word.word.length - 1) {
+                $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("word_end");
+            } else {
+                $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("" + word.word + "");
             }
+            x = x + incrementer[0];
+            y = y + incrementer[1];
         }
     }
 }
 
-function isWord(firstClicked, secondClicked)
-{
-    console.log(firstClicked);
-  if (($("#"+firstClicked).hasClass("wordStart")&&$("#"+secondClicked).hasClass("wordEnd")) ||(($("#"+firstClicked).hasClass("wordEnd") && $("#"+secondClicked).hasClass("wordStart"))))
-  {
-    console.log("Word found.");
-  }
-  //is one of the tiles the beginning or end of word and
-  //is the other tile the end or beginning of same word.
-  //word.start = tileID, word.end = tileID;
-  //if firstclicked === wordEnd || wordStart
+
+function listWords(words){
+    words.map(function (word) {
+        $("body").append('<div class="word">'+word.word+'</div>');
+    })
 }
 
-function selectTiles(){
-  console.log("selectTiles() called.")
-  var word = $("#"+this.id).html();
-  console.log("currentTile="+word);
- // $("#"+this.id).html(word.toLowerCase());
-}
+
 
 function highlight(tileID){
   //set class to highlighted
@@ -182,8 +172,6 @@ function choose(tileID){
     secondClicked ="";
     firstClicked = tileID;
     highlight(firstClicked);
-    //console.log("First Clicked: " + tileID);
-
   } else {
     var secondClicked = tileID;
     highlight(secondClicked);
@@ -194,15 +182,37 @@ function choose(tileID){
 
 }
 
+function isWord(firstClicked, secondClicked)
+{
+    console.log(firstClicked);
+    if ($("#"+firstClicked).hasClass("word_start") && $("#"+secondClicked).hasClass("word_end"))
+
+    {
+        console.log("Word found.");
+    }
+    //is one of the tiles the beginning or end of word and
+    //is the other tile the end or beginning of same word.
+    //word.start = tileID, word.end = tileID;
+    //if firstclicked === wordEnd || wordStart
+}""
+
+function selectTiles(){
+    console.log("selectTiles() called.")
+    var word = $("#"+this.id).html();
+    console.log("currentTile="+word);
+    // $("#"+this.id).html(word.toLowerCase());
+}
+
 $(function(){
-  buildGrid();
-  placeWords(wordGrid);
-  listWords(words);
-  $(".card").click(function () {
+    buildGrid();
+    wordArr = buildWords(words);
+    placeWords(wordArr);
+    listWords(wordArr);
+    $(".card").click(function () {
       var word = $("#"+this.id).html();
       console.log("currentTile="+this.id);
       choose(this.id)
-  });
+    });
 });
 
 //var person = {firstName:"John", lastName:"Doe", age:50, eyeColor:"blue"};
