@@ -18,14 +18,18 @@
   display: inline-block;
   border: black solid 1px;
   margin: 1px;
+    text-transform: uppercase;
 }
 .card:hover{
-  background-color: darkgreen;
   cursor: pointer;
 }
 
 .highlight{
-  background-color: orange;
+  background-color: orangered;
+}
+
+.found{
+    background-color: orangered;
 }
 
 .word{
@@ -37,4 +41,7 @@
     text-decoration: line-through;
 }
 
+.crossed-out{
+    text-decoration: line-through;
+}
 

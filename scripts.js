@@ -80,9 +80,9 @@ function placeWords(words){
             //mark tile as word start, associate with word.
             $('#' + (word.startX + x) + "_" + (word.startY + y)).html(word.word[j]);
             if (j == 0){
-                $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("word_start");
+                $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("word_start " + word.word);
             } else if (j == word.word.length - 1) {
-                $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("word_end");
+                $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("word_end " + word.word);
             } else {
                 $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("" + word.word + "");
             }
@@ -92,19 +92,14 @@ function placeWords(words){
     }
 }
 
-
 function listWords(words){
     words.map(function (word) {
-        $("body").append('<div class="word">'+word.word+'</div>');
+        $("body").append('<div class="word" id=' + word.word + ' >' + word.word + '</div>');
     })
 }
 
-
-
 function highlight(tileID){
-  //set class to highlighted
-  //add wiggle.
-  $("#"+tileID).css("background-color", "orangered");
+  $("#"+tileID).addClass("highlight");
 }
 
 function highlightWord (firstClicked, secondClicked) {
@@ -125,7 +120,7 @@ function highlightWord (firstClicked, secondClicked) {
     var rightMost = secondClicked;
   } else {
     var leftMost = secondClicked;
-    var rightMost = firstClicked
+    var rightMost = firstClicked;
   }
 
 
@@ -168,7 +163,7 @@ var secondClicked;
 
 function choose(tileID){
   if (!firstClicked) {
-    $(".card").css("background-color", "green");
+    $(".card").removeClass("highlight");
     secondClicked ="";
     firstClicked = tileID;
     highlight(firstClicked);
@@ -182,19 +177,58 @@ function choose(tileID){
 
 }
 
+//depending on the point (start or end), loops through the array of word
+//objects (wordArr) and returns those words matching the x and y coordinates
+// in the parameters.
+function filterCoord(wordArr, X, Y, point) {
+    var returnArr = [];
+    for (var i = 0; i < wordArr.length; i++){
+        var word = wordArr[i];
+        if (point === "start") {
+            if ((word.startX == X) && (word.startY == Y)) {
+                returnArr.push(word);
+            }
+        } else if (point === 'end'){
+            if ((word.endX == X) && (word.endY == Y)) {
+                returnArr.push(word);
+            }
+        }
+    }
+    return returnArr;
+}
+
 function isWord(firstClicked, secondClicked)
 {
-    console.log(firstClicked);
-    if ($("#"+firstClicked).hasClass("word_start") && $("#"+secondClicked).hasClass("word_end"))
-
+    if (($("#"+firstClicked).hasClass("word_start") && $("#"+secondClicked).hasClass("word_end"))||($("#"+firstClicked).hasClass("word_end") && $("#"+secondClicked).hasClass("word_start")))
     {
-        console.log("Word found.");
+        //is first clicked word start or word end
+        if ($("#" + firstClicked).hasClass("word_start")){
+            var startX = firstClicked[0];
+            var startY = firstClicked[2];
+            var endX = secondClicked[0];
+            var endY = secondClicked[2];
+            //i think the initial conditionals will catch all other cases. Firstclicked will either be word start or word end.
+        } else {
+            var startX = secondClicked[0];
+            var startY = secondClicked[2];
+            var endX = firstClicked[0];
+            var endY = firstClicked[2];
+        }
+        console.log("startX="+startX+", startY="+startY+", endX="+endX+", endY="+endY);
+        //make a double call to filterCoord
+        var wordObj = filterCoord(filterCoord(wordArr, startX, startY, "start"), endX, endY, "end");
+        var word = wordObj[0].word;
+
+        console.log("Here's a word: " + word);
+        $("." + word).addClass("found");
+        $("#" + word).addClass("crossed-out");
+
+        //this assumes that there will never be two words with the same start
+        //and no words will repeat.
+
+
     }
-    //is one of the tiles the beginning or end of word and
-    //is the other tile the end or beginning of same word.
-    //word.start = tileID, word.end = tileID;
-    //if firstclicked === wordEnd || wordStart
-}""
+}
 
 function selectTiles(){
     console.log("selectTiles() called.")
@@ -209,73 +243,11 @@ $(function(){
     placeWords(wordArr);
     listWords(wordArr);
     $(".card").click(function () {
-      var word = $("#"+this.id).html();
       console.log("currentTile="+this.id);
       choose(this.id)
     });
 });
 
-//var person = {firstName:"John", lastName:"Doe", age:50, eyeColor:"blue"};
 
 
-
-//across =   row col++
-//down   =   row++ col
-//diagonal = row++ col++
-//acrossBackwards = row col--
-//downBackwards = row-- col
-
-
-// word constructor
-// position of beginning of word
-// position of end of word
-// found?
-
-// tile constructor
-// part of a word(s)
-// beginning of word(s)
-// end of word(s)
-// highlighted status
-// words tiles belong to
-//
-
-// Tile {
-// this.words = ['oak','keep','kite']
-// this.beginning = true
-// this.end = true
-// this.row = 2
-// this.column = 2
-// this.highlighted = false
-// this.id = 2_2
-//
-// }
-
-
-// Word {
-// this.found = false
-// }
-
-//add available words to the bottom of the display
-
-//check if firstClicked is beginning or end of word
-//and then check if secondClicked is beginning or end word
-//if not valid selection or word => reset selection
-//if valid word => change the following:
-//permanent highlight value of involved tiles (redundant highlighting)
-//status of word as found or hidden
-//if not beginning or end of another word => remove status as beginning or end of word
-//cross off the word from the list
-//end turn
-
-//CASE STUDY
-// a tile is the beginning of two words and end of one
-
-//O.....
-//.A....
-//..KEEP
-//..I...
-//..T...
-//..E...
-
-//in case of K or 2_2.
 
