@@ -5,6 +5,7 @@
 .game-board{
   background-color: grey;
   width: 324px;
+    margin: 0 auto;
 }
 
 .card {
@@ -37,11 +38,15 @@
     text-transform: uppercase;
 }
 
-.word.found{
+.crossed-out{
     text-decoration: line-through;
 }
 
-.crossed-out{
-    text-decoration: line-through;
+.list-word{
+    width: 100%;
+    text-align: center;
+    font-family: "Arial";
+    text-transform: uppercase;
+    margin: 0 auto;
 }
 

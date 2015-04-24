@@ -93,8 +93,9 @@ function placeWords(words){
 }
 
 function listWords(words){
+    $("body").append('<div id=wordList></div>')
     words.map(function (word) {
-        $("body").append('<div class="word" id=' + word.word + ' >' + word.word + '</div>');
+        $("#wordList").append('<div class="list-word" id=' + word.word + ' >' + word.word + '</div>');
     })
 }
 
@@ -236,6 +237,8 @@ function selectTiles(){
     console.log("currentTile="+word);
     // $("#"+this.id).html(word.toLowerCase());
 }
+
+
 
 $(function(){
     buildGrid();
