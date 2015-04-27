@@ -3,34 +3,39 @@
 }
 
 .game-board{
-  background-color: grey;
-  width: 324px;
-    margin: 0 auto;
 }
 
 .card {
-  width: 50px;
-  height: 50px;
   background-color: green;
   color: white;
   font-family: "Arial";
   font-size: 2.8em;
   text-align: center;
+  text-shadow: 1px 1px 3px black;
   display: inline-block;
   border: black solid 1px;
-  margin: 1px;
+  border-radius: 4px;
+  margin: 2px;
+   box-shadow: 1px 1px 0px #111;
     text-transform: uppercase;
+    transition: transform 0.1s ease-in-out;
 }
 .card:hover{
   cursor: pointer;
 }
 
 .highlight{
-  background-color: orangered;
+  background-color: orangered !important;
+    -webkit-animation: wiggle;
+  -webkit-animation-name: wiggle;
+-webkit-animation-duration: 0.5s;
 }
 
 .found{
-    background-color: orangered;
+    -webkit-animation: found;
+  -webkit-animation-name: found;
+-webkit-animation-duration: 0.5s;
+background-color: #cc3700;
 }
 
 .word{
@@ -49,4 +54,31 @@
     text-transform: uppercase;
     margin: 0 auto;
 }
+
+.wiggle{
+  -webkit-animation: wiggle;
+  -webkit-animation-name: wiggle;
+-webkit-animation-duration: 0.5s;
+}
+
+
+
+@-webkit-keyframes wiggle{
+   0%{transform: rotate3d(0, 0, 0, 0deg);}
+  20%{transform: rotate3d(0, 1, 1, 35deg);}
+  40%{transform: rotate3d(0, -1, -1, 35deg);}
+  60%{transform: rotate3d(0, 1, 1, 15deg);}
+  80%{transform: rotate3d(0, -1, -1, 15deg);}
+  100%{transform: rotate3d(0deg, 0, 0);}
+}
+
+@-webkit-keyframes found{
+  0%{transform: background-color: orangered;}
+  20%{transform: rotate3d(0, 1, 1, 35deg);transform: scale(1.2,1.2);}
+  40%{transform: rotate3d(0, -1, -1, 35deg);}
+  60%{transform: rotate3d(0, 1, 1, 15deg);}
+  80%{transform: rotate3d(0, -1, -1, 15deg);}
+  100%{transform: rotate3d(0deg, 0, 0);}
+}
+
 

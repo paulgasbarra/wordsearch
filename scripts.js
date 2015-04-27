@@ -1,7 +1,9 @@
 var tiles = 6;
-var tileWidth = 50;
-var tileMargin = 1;
-var gameBoardWidth = tiles * tileWidth;
+var tileSize = 50;
+var tileMargin = 2;
+var gameBoardWidth = (tiles * tileSize) + (tiles * (tileMargin*3));
+//6*50 = 300 6 * 2 * 2 = 24
+var wordsFound = 0;
 
 function Word(word, startX, startY, endX, endY, order, condition){
     this.word = word;
@@ -43,11 +45,11 @@ function buildGrid() {
   for (var i = 0; i < tiles; i++){
     for(var j = 0; j < tiles; j++){
         var tileID = i + "_" + j;
-        $( ".game-board" ).append( "<div class=card id =" + tileID + "></div>" );
+        $( ".game-board" ).append( "<div class=card id =" + tileID + " style='width: " + tileSize + "px'></div>" );
         $("#"+tileID).html(randomLetter());
     }
   }
-    $(".game-board").css("width", "gameBoardWidth");
+    $(".game-board").css("width", ""+gameBoardWidth+"px");
 }
 
 function setIncrement(word){
@@ -198,6 +200,12 @@ function filterCoord(wordArr, X, Y, point) {
     return returnArr;
 }
 
+function winCondition(wordsFound){
+  if (wordsFound >= wordArr.length){
+    location.reload();
+  }
+}
+
 function isWord(firstClicked, secondClicked)
 {
     if (($("#"+firstClicked).hasClass("word_start") && $("#"+secondClicked).hasClass("word_end"))||($("#"+firstClicked).hasClass("word_end") && $("#"+secondClicked).hasClass("word_start")))
@@ -224,10 +232,11 @@ function isWord(firstClicked, secondClicked)
         $("." + word).addClass("found");
         $("#" + word).addClass("crossed-out");
 
+        wordsFound++;
+        winCondition(wordsFound);
+
         //this assumes that there will never be two words with the same start
         //and no words will repeat.
-
-
     }
 }
 
