@@ -1,27 +1,200 @@
-.body{
-  font-size: 14px;
+body{
+
+    width: 100%;
+    height: 1920px;
+    margin: 0;
+    background-color: lightskyblue;
+    overflow: hidden;
+}
+
+#timebox{
+    position: absolute;
+    top: 0;
+    background-color: #181615;
+    width: 100%;
+    height: 192px;
+    font-size: 60px;
+}
+
+#cloud{
+    height: 120px;
+    width: 350px;
+    background: #f2f9fe;
+    border-radius: 100px;
+    position: relative;
+    top: -700px;
+    -webkit-animation: float;
+    -webkit-animation-name: float;
+    -webkit-animation-duration: 80s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+
+
+}
+
+#cloud:after, #cloud:before{
+    content:'';
+    position:absolute;
+    top: -100px;
+    background: #f2f9fe;
+    z-index: -100;
+}
+
+#cloud:after{
+    width: 100px; height: 100px;
+    top: -50px; left: 50px;
+    border-radius: 100px;
+}
+
+#cloud:before{
+    width: 180px; height: 180px;
+    top:-90px;right:50px;
+    border-radius:100px;
+}
+
+#cloudTwo{
+    height: 105px;
+    width: 350px;
+    top: -1030px;
+    background: #f2f9fe;
+    border-radius: 100px;
+    position: relative;
+    -webkit-animation: float;
+    -webkit-animation-name: float;
+    -webkit-animation-duration: 50s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+
+
+}
+
+#cloudTwo:after, #cloudTwo:before{
+    content:'';
+    position:absolute;
+    background: #f2f9fe;
+    z-index: -1;
+}
+
+#cloudTwo:after{
+    width: 140px; height: 140px;
+    top: -85px; left: 170px;
+    border-radius: 100px;
+}
+
+#cloudTwo:before{
+    width: 180px; height: 180px;
+    top:-115px;left:15px;
+    border-radius:100px;
+}
+
+#cloudThree{
+    height: 125px;
+    width: 370px;
+    top: -650px;
+    background: #f2f9fe;
+    border-radius: 100px;
+    position: relative;
+    -webkit-animation: float;
+    -webkit-animation-name: float;
+    -webkit-animation-duration: 25s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+
+
+}
+
+#cloudThree:after, #cloudThree:before{
+    content:'';
+    position:absolute;
+    background: #f2f9fe;
+    z-index: -1;
+}
+
+#cloudThree:after{
+    width: 180px; height: 185px;
+    top: -70px; left: 150px;
+    border-radius: 100px;
+}
+
+#cloudThree:before{
+    width: 180px; height: 180px;
+    top:-57px;left:51px;
+    border-radius:100px;
+}
+
+.hill{
+    position: absolute;
+    background:  -webkit-linear-gradient(top, lightgreen 15%, green 100%);
+    width: 100%;
+    height: 300px;
+    bottom: 280px;
+}
+
+.hill:after, .hill:before{
+    content:'';
+    position:absolute;
+    background: lightgreen;
+    z-index: -1;
+
+}
+.hill:after{
+    width: 50%;
+    height: 175px;
+    top: -95px;
+    border-radius: 50%;
+}
+.hill:before{
+    left: 25%;
+    width: 75%;
+    height: 300px;
+    top: -150px;
+    border-radius: 50%;
+}
+
+.clock{
+    float: right;
+    padding-top: 60px;
+    padding-right: 50px;
+    text-align: right;
+    font-family: 'Helvetica';
+    color: white;
 }
 
 .game-board{
+    margin: 0 auto;
+    margin-top: 300px;
+    position: relative;
+    z-index: 2;
 }
 
 .card {
+    z-index: 10;
   background-color: green;
   color: white;
   font-family: "Arial";
-  font-size: 2.8em;
   text-align: center;
   text-shadow: 1px 1px 3px black;
   display: inline-block;
-  border: black solid 1px;
+  border: #333 solid 2px;
+    border-bottom: #333 solid 4px;
+    border-right: #333 solid 4px;
   border-radius: 4px;
-  margin: 2px;
-   box-shadow: 1px 1px 0px #111;
+  margin: 5px;
     text-transform: uppercase;
     transition: transform 0.1s ease-in-out;
+    box-shadow: 3px 3px 8px black;
 }
 .card:hover{
   cursor: pointer;
+}
+.card:active{
+    position: relative;
+    top: 2px;
+    left: 2px;
+    border-bottom: #333 solid 2px;
+    border-right: #333 solid 2px;
+    margin-right: 7px;
+
 }
 
 .highlight{
@@ -48,9 +221,10 @@ background-color: #cc3700;
 }
 
 .list-word{
+    font-size: 2em;
     width: 100%;
     text-align: center;
-    font-family: "Arial";
+    font-family: "Helvetica";
     text-transform: uppercase;
     margin: 0 auto;
 }
@@ -59,6 +233,14 @@ background-color: #cc3700;
   -webkit-animation: wiggle;
   -webkit-animation-name: wiggle;
 -webkit-animation-duration: 0.5s;
+}
+
+.bottom-container{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 284px;
+    background-color: #181615;
 }
 
 
@@ -81,4 +263,12 @@ background-color: #cc3700;
   100%{transform: rotate3d(0deg, 0, 0);}
 }
 
-
+@-webkit-keyframes float
+{
+    0% {
+        transform: translateX(1080px);
+    }
+    100% {
+        transform: translateX(-400px);
+    }
+}

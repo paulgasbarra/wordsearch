@@ -1,7 +1,8 @@
 var tiles = 6;
-var tileSize = 50;
-var tileMargin = 2;
-var gameBoardWidth = (tiles * tileSize) + (tiles * (tileMargin*3));
+var tileSize = 100;
+var fontSize = tileSize * 0.9;
+var tileMargin = 5;
+var gameBoardWidth = (tiles * tileSize) + (tiles * (tileMargin*3))+tiles;
 //6*50 = 300 6 * 2 * 2 = 24
 var wordsFound = 0;
 
@@ -41,15 +42,15 @@ function randomLetter() {
 }
 
 function buildGrid() {
-  $("body").append("<div class=game-board></div>");
-  for (var i = 0; i < tiles; i++){
-    for(var j = 0; j < tiles; j++){
-        var tileID = i + "_" + j;
-        $( ".game-board" ).append( "<div class=card id =" + tileID + " style='width: " + tileSize + "px'></div>" );
-        $("#"+tileID).html(randomLetter());
+    $(".game-board").css("width", ""+gameBoardWidth+"px");
+    for (var i = 0; i < tiles; i++){
+        for(var j = 0; j < tiles; j++){
+            var tileID = i + "_" + j;
+            $( ".game-board" ).append( "<div class=card id =" + tileID + " style = 'width: " + tileSize + "px; font-size: " + fontSize + "px'></div>" );
+            $("#"+tileID).html(randomLetter());
     }
   }
-    $(".game-board").css("width", ""+gameBoardWidth+"px");
+
 }
 
 function setIncrement(word){
@@ -95,10 +96,10 @@ function placeWords(words){
 }
 
 function listWords(words){
-    $("body").append('<div id=wordList></div>')
     words.map(function (word) {
         $("#wordList").append('<div class="list-word" id=' + word.word + ' >' + word.word + '</div>');
     })
+
 }
 
 function highlight(tileID){
