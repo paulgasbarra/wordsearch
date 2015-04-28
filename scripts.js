@@ -201,10 +201,19 @@ function filterCoord(wordArr, X, Y, point) {
     return returnArr;
 }
 
-function winCondition(wordsFound){
-  if (wordsFound >= wordArr.length){
-    location.reload();
-  }
+function winCondition(word) {
+    if (wordArr.length > 1) {
+        for (var i = 0; i < wordArr.length; i++) {
+            if (wordArr[i].word === word) {
+                wordArr.splice(i, 1);
+                console.log(wordArr);
+            }
+        }
+        return;
+    } else {
+    $("#fanfareoverlay").css("display", "block");
+    $("#fanfarebox").css("display", "block");
+}
 }
 
 function isWord(firstClicked, secondClicked)
@@ -233,8 +242,7 @@ function isWord(firstClicked, secondClicked)
         $("." + word).addClass("found");
         $("#" + word).addClass("crossed-out");
 
-        wordsFound++;
-        winCondition(wordsFound);
+        winCondition(word);
 
         //this assumes that there will never be two words with the same start
         //and no words will repeat.
