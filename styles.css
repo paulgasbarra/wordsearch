@@ -55,7 +55,7 @@ body{
 #cloudTwo{
     height: 105px;
     width: 350px;
-    top: -1030px;
+    top: -990px;
     background: #f2f9fe;
     border-radius: 100px;
     position: relative;
@@ -162,7 +162,7 @@ body{
 
 .game-board{
     margin: 0 auto;
-    margin-top: 300px;
+    margin-top: 500px;
     position: relative;
     z-index: 2;
 }
@@ -216,18 +216,47 @@ background-color: #cc3700;
     text-transform: uppercase;
 }
 
+#wordList{
+width: 500px;
+    margin: 0 auto;
+
+}
+
 .crossed-out{
-    text-decoration: line-through;
+    -webkit-animation: fadeWord;
+    -webkit-animation-name: fadeWord;
+    -webkit-animation-duration: 1s;
+    opacity: 0.2;
+}
+
+@-webkit-keyframes fadeWord
+{
+0% {
+    opacity: 1;
+}
+50%{
+    transform: scale(1.2);
+}
+100% {
+    opacity: 0.2; transform: scale(1);
+}
 }
 
 .list-word{
-    font-size: 2em;
-    width: 100%;
+    font-size: 3em;
+    width: 238px;
+    color: white;
+    text-shadow: 2px 2px 5px black;
+
+    font-weight: 600;
     text-align: center;
     font-family: "Helvetica";
     text-transform: uppercase;
-    margin: 0 auto;
+    margin: 6px;
+    float:left;
 }
+
+
 
 .wiggle{
   -webkit-animation: wiggle;
@@ -243,8 +272,6 @@ background-color: #cc3700;
     background-color: #181615;
 }
 
-
-
 @-webkit-keyframes wiggle{
    0%{transform: rotate3d(0, 0, 0, 0deg);}
   20%{transform: rotate3d(0, 1, 1, 35deg);}
@@ -255,7 +282,7 @@ background-color: #cc3700;
 }
 
 @-webkit-keyframes found{
-  0%{transform: background-color: orangered;}
+  0%{transform: background-color: orangered; transform: rotate3d(0, 0, 0, 0deg);}
   20%{transform: rotate3d(0, 1, 1, 35deg);transform: scale(1.2,1.2);}
   40%{transform: rotate3d(0, -1, -1, 35deg);}
   60%{transform: rotate3d(0, 1, 1, 15deg);}
@@ -272,3 +299,81 @@ background-color: #cc3700;
         transform: translateX(-400px);
     }
 }
+
+#fanfarebox{
+    display: none;
+    position: absolute;
+    top: 700px;
+    left: 140px;
+    background-color: #FFF;
+    border-radius: 20px;
+    border: 50px solid darkorange;
+    width: 800px;
+    height: 500px;
+    z-index: 10;
+    text-align: center;
+    font-size: 3em;
+    font-family: "Helvetica";
+    text-transform: uppercase;
+    line-height: 2.5;
+    -webkit-animation: popin;
+    -webkit-animation-name: popin;
+    -webkit-animation-duration: 1s;
+}
+
+#fanfareoverlay{
+    display: none;
+    opacity: .8;
+    position: fixed;
+    top: 192px;
+    left: 0px;
+    background: #FFF;
+    width: 100%;
+    z-index: 10;
+    height: 78%;
+}
+
+.restart{
+    position: relative;
+    top: 60px;
+    height: 100px;
+    width: 200px;
+    font-size: 30px;
+    -moz-box-shadow: 3px 3px 8px black;
+    -webkit-box-shadow: 3px 3px 8px black;
+    box-shadow: 3px 3px 8px black;
+    background-color:green;
+    -moz-border-radius:10px;
+    -webkit-border-radius:10px;
+    border-radius:4px;
+    border:2px solid #333;
+    display:block;
+    cursor:pointer;
+    color:#ffffff;
+    font-family:"Helvetica";
+    text-decoration:none;
+    text-shadow: 1px 1px 3px black;
+    margin: 0 auto;
+    text-transform: uppercase;
+}
+
+@-webkit-keyframes popin
+{
+    0% {
+        transform: rotate(0deg) scale(0,0);
+    }
+    100% {
+        transform: rotate(360deg) scale(1,1);
+    }
+}
+
+
+/*.restart:active {*/
+    /*margin: 0 auto;*/
+    /*position: relative;*/
+    /*top: 2px;*/
+    /*left: 2px;*/
+    /*border-bottom: #333 solid 2px;*/
+    /*border-right: #333 solid 2px;*/
+    /*margin-right: 7px;*/
+/*}*/
