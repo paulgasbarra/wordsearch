@@ -17,13 +17,22 @@ function Word(word, startX, startY, endX, endY, order, condition){
 }
 
 //Construction of words assumes that the start and end coordinates make sense.
-words = [
+words2 = [
     ["scope", 0, 1, 0, 5, "forwards", "hidden"],
     ["coat", 0, 2, 3, 2, "forwards", "hidden"],
     ["heart",2, 0, 2, 4, "forwards", "hidden"],
     ["ran", 2, 3, 4, 5, "forwards", "hidden"],
     ["hope", 2, 0, 5, 0, "forwards", "hidden"],
     ["escape", 5, 0, 5, 5, "forwards", "hidden"]
+];
+
+words = [
+   ["bank", 4, 0, 4, 3, "forwards", "hidden"],
+   ["human", 0, 0, 0, 4, "forwards", "hidden"],
+    ["save", 0, 5, 3, 5, "forwards", "hidden"],
+   ["app", 1, 1, 3, 3, "forwards", "hidden"],
+    ["always", 5, 0, 5, 5, "forwards", "hidden"],
+   ["open", 1, 2, 4, 2, "forwards", "hidden"],
 ];
 
 function buildWords(words){
