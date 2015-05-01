@@ -1,10 +1,6 @@
-var tiles = 6;
-var tileSize = 100;
-var fontSize = tileSize * 0.9;
-var tileMargin = 5;
-var gameBoardWidth = (tiles * tileSize) + (tiles * (tileMargin*3))+tiles;
-//6*50 = 300 6 * 2 * 2 = 24
-var wordsFound = 0;
+function prerender(){location.reload()};
+function postrender(){};
+
 
 function Word(word, startX, startY, endX, endY, order, condition){
     this.word = word;
@@ -51,6 +47,11 @@ function randomLetter() {
 }
 
 function buildGrid() {
+    var tiles = 6;
+    var tileSize = 100;
+    var fontSize = tileSize * 0.9;
+    var tileMargin = 5;
+    var gameBoardWidth = (tiles * tileSize) + (tiles * (tileMargin*3))+tiles;
     $(".game-board").css("width", ""+gameBoardWidth+"px");
     for (var i = 0; i < tiles; i++){
         for(var j = 0; j < tiles; j++){
