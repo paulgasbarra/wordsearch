@@ -22,13 +22,15 @@ body{
     background: #f2f9fe;
     border-radius: 100px;
     position: relative;
-    top: 12git0px;
+    top: 120px;
     -webkit-animation: float;
     -webkit-animation-name: float;
     -webkit-animation-duration: 80s;
     -webkit-animation-iteration-count: infinite;
     -webkit-animation-timing-function: linear;
     -webkit-animation-delay: -40s ;
+    background: -webkit-linear-gradient(top, #f2f9fe 5%, #d6f0fd 100%);
+
 
 }
 
@@ -64,8 +66,8 @@ body{
     -webkit-animation-duration: 50s;
     -webkit-animation-iteration-count: infinite;
     -webkit-animation-timing-function: linear;
-    -webkit-animation-delay: -20s ;
-
+    -webkit-animation-delay: -10s ;
+    background: -webkit-linear-gradient(top, #f2f9fe 5%, #d6f0fd 100%);
 }
 
 #cloudTwo:after, #cloudTwo:before{
@@ -100,6 +102,7 @@ body{
     -webkit-animation-iteration-count: infinite;
     -webkit-animation-timing-function: linear;
     -webkit-animation-delay: -20s ;
+    background: -webkit-linear-gradient(top, #f2f9fe 5%, #d6f0fd 100%);
 
 
 
@@ -250,7 +253,7 @@ background-color: #cc3700;
     font-size: 3em;
     width: 238px;
     color: white;
-    text-shadow: 2px 2px 5px black;
+    text-shadow: 6px 3px 12px black;
 
     font-weight: 600;
     text-align: center;
@@ -292,22 +295,6 @@ background-color: #cc3700;
   60%{transform: rotate3d(0, 1, 1, 15deg);}
   80%{transform: rotate3d(0, -1, -1, 15deg);}
   100%{transform: rotate3d(0deg, 0, 0);}
-}
-
-@-webkit-keyframes asdfa
-{
-    0% {
-        transform: translateX(400px);
-    }
-    50% {
-         transform: translateX(-400px);
-     }
-    51% {
-          right: -400px;
-      }
-    100% {
-        transform: translateX(400px);
-    }
 }
 
 @-webkit-keyframes float {
@@ -392,4 +379,12 @@ background-color: #cc3700;
     text-align: center;
     font-family: "Helvetica";
     bottom: 200px;
+}
+
+.skyline {
+    position: absolute;
+    top: 108px;
+    left: -1489px;
+    z-index: -6;
+
 }
