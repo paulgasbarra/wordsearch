@@ -1,106 +1,121 @@
-function prerender(){location.reload()};
-function postrender(){};
+function prerender(){location.reload()}
+function postrender(){}
 
 
-function Word(word, startX, startY, endX, endY, order, condition){
-    this.word = word;
-    this.startX = startX;
-    this.startY = startY;
-    this.endX = endX;
-    this.endY = endY;
-    this.order = order;
-    this.condition = condition;
-}
+//var orientations = ["downstairs", "horizontal", "upstairs", "vertical"];
+//var orders = ["forwards", "reverse"];
+var wordArray = [];
 
-//Construction of words assumes that the start and end coordinates make sense.
-words2 = [
-    ["scope", 0, 1, 0, 5, "forwards", "hidden"],
-    ["coat", 0, 2, 3, 2, "forwards", "hidden"],
-    ["heart",2, 0, 2, 4, "forwards", "hidden"],
-    ["ran", 2, 3, 4, 5, "forwards", "hidden"],
-    ["hope", 2, 0, 5, 0, "forwards", "hidden"],
-    ["escape", 5, 0, 5, 5, "forwards", "hidden"]
+//grid variables
+var gridSize = 6;
+var tileSize = 100;
+var fontSize = tileSize * 0.9;
+var tileMargin = 5;
+
+var firstClicked;
+var secondClicked;
+
+var words = [
+        ["bank", 0, 4, "horizontal"],
+        ["human", 0, 0, "horizontal"],
+        ["save", 5, 1, "vertical"],
+        ["app", 1, 1, "downstairs"],
+        ["always", 0, 5, "horizontal"],
+        ["open", 2, 1, "vertical"]
 ];
-
-words = [
-   ["bank", 4, 0, 4, 3, "forwards", "hidden"],
-   ["human", 0, 0, 0, 4, "forwards", "hidden"],
-    ["save", 0, 5, 3, 5, "forwards", "hidden"],
-   ["app", 1, 1, 3, 3, "forwards", "hidden"],
-    ["always", 5, 0, 5, 5, "forwards", "hidden"],
-   ["open", 1, 2, 4, 2, "forwards", "hidden"],
-];
-
-function buildWords(words){
-    var wordArr = [];
-    for (var i = 0; i < words.length; i++){
-        var word = new Word(words[i][0], words[i][1], words[i][2], words[i][3], words[i][4], words[i][5], words[i][6]);
-        wordArr.push(word);
-    }
-    console.log(wordArr);
-    return wordArr;
-}
 
 function randomLetter() {
-  var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  return alpha.charAt(Math.floor(Math.random() * alpha.length));
+    var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    return alpha.charAt(Math.floor(Math.random() * alpha.length));
 }
 
-function buildGrid() {
-    var tiles = 6;
-    var tileSize = 100;
-    var fontSize = tileSize * 0.9;
-    var tileMargin = 5;
-    var gameBoardWidth = (tiles * tileSize) + (tiles * (tileMargin*3))+tiles;
-    $(".game-board").css("width", ""+gameBoardWidth+"px");
-    for (var i = 0; i < tiles; i++){
-        for(var j = 0; j < tiles; j++){
-            var tileID = i + "_" + j;
-            $( ".game-board" ).append( "<div class=card id =" + tileID + " style = 'width: " + tileSize + "px; font-size: " + fontSize + "px'></div>" );
-            $("#"+tileID).html(randomLetter());
+function buildGrid(gridSize, tileSize, fontSize, tileMargin) {
+
+    var gameBoardWidth = (gridSize * tileSize) + (gridSize * (tileMargin*3)) + gridSize;
+
+    var board = $(".game-board");
+        board.css("width", ""+gameBoardWidth+"px");
+
+    for (var i = 0; i < gridSize; i++){
+        for(var j = 0; j < gridSize; j++){
+            var tileID = j + "_" + i;
+            board.append( "<div class=card id =" + tileID + " style = 'width: " + tileSize + "px; font-size: " + fontSize + "px'>"+randomLetter()+"</div>" );
+        }
     }
-  }
 
 }
 
-function setIncrement(word){
-    //vertical
-    if (word.startX == word.endX){
-        incrementer = [0,1];
-        return incrementer;
+function buildWord(word, wordArray){
+    //add gridsize argument when we have random builder function so we can place things. If that's what we want.
+    if (word.length != 4) {throw new Error("Not enough arguments in the word array."); return}
+
+    var startX = word[1];
+    var startY = word[2];
+    var orientation = word[3];
+    var incrementX, incrementY;
+    //var order = randomPick(orders);
+
+
+    switch (orientation) {
+        case "downstairs":
+            //startX = Math.floor(Math.random() * (gridSize - word.length));
+            //startY = Math.floor(Math.random() * (gridSize - word.length));
+            incrementX = 1;
+            incrementY = 1;
+            break;
+        case "horizontal":
+            //startX = Math.floor(Math.random() * (gridSize - word.length));
+            //startY = Math.floor(Math.random() * gridSize);
+            incrementX = 1;
+            incrementY = 0;
+            break;
+        case "upstairs":
+            //startX = Math.floor(Math.random() * (gridSize - word.length + 1));
+            //startY = Math.floor(Math.random() * (gridSize - word.length + 1)) + word.length-1;
+            incrementX = 1;
+            incrementY = -1;
+            break;
+        case "vertical":
+            //startX = Math.floor(Math.random() * gridSize);
+            //startY = Math.floor(Math.random() * (gridSize - word.length));
+            incrementX = 0;
+            incrementY = 1;
+            break;
     }
-    //horizontal
-    else if (word.startY == word.endY){
-        incrementer = [1,0];
-        return incrementer;
+
+    wordArray.push({word: word[0], startX: startX, startY: startY, orientation: orientation, incrementX: incrementX, incrementY: incrementY});
+
+    return wordArray;
+
+}
+
+function buildWords(words, wordArray){
+    for (var i = 0; i < words.length; i++){
+        buildWord(words[i], wordArray);
     }
-    //diagonal
-    else if ((word.endX - word.startX) == (word.endY - word.startY)){
-        incrementer = [1,1];
-        return incrementer;
-    } else {
-        console.log("Major Fuckery!")
-    }
+    return wordArray;
 }
 
 function placeWords(words){
     for (var i = 0; i < words.length; i++){
         var word = words[i];
+//        word.word = reverse(word.word);
         var x = 0;
         var y = 0;
-        incrementer = setIncrement(words[i]);
+        console.log(word)
         for (var j = 0; j < word.word.length; j++){
-            //mark tile as word start, associate with word.
-            $('#' + (word.startX + x) + "_" + (word.startY + y)).html(word.word[j]);
-            if (j == 0){
-                $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("word_start " + word.word);
-            } else if (j == word.word.length - 1) {
+            if (j === 0){
+                $('#' + (word.startX) + "_" + (word.startY)).addClass("word_start " + word.word);
+            } else if (j === word.word.length - 1) {
                 $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("word_end " + word.word);
+                word.endX = word.startX + x;
+                word.endY = word.startY + y;
             } else {
                 $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("" + word.word + "");
             }
-            x = x + incrementer[0];
-            y = y + incrementer[1];
+            $('#' + (word.startX + x) + "_" + (word.startY + y)).html(word.word[j]);
+            x = x + word.incrementX;
+            y = y + word.incrementY;
         }
     }
 }
@@ -129,12 +144,14 @@ function highlightWord (firstClicked, secondClicked) {
   var maxCol = Math.max(col1,col2);
   var minRow = Math.min(row1,row2);
   var maxRow = Math.max(row1,row2);
+
+    var leftMost, rightMost;
   if (firstClicked[2] < secondClicked[2]){
-    var leftMost = firstClicked;
-    var rightMost = secondClicked;
+    leftMost = firstClicked;
+    rightMost = secondClicked;
   } else {
-    var leftMost = secondClicked;
-    var rightMost = firstClicked;
+    leftMost = secondClicked;
+    rightMost = firstClicked;
   }
 
 
@@ -172,10 +189,9 @@ function highlightWord (firstClicked, secondClicked) {
   }
 }
 
-var firstClicked;
-var secondClicked;
 
-function choose(tileID){
+
+function choose(tileID, wordArray){
   if (!firstClicked) {
     $(".card").removeClass("highlight");
     secondClicked ="";
@@ -185,19 +201,20 @@ function choose(tileID){
     var secondClicked = tileID;
     highlight(secondClicked);
     highlightWord(firstClicked, secondClicked);
-    isWord(firstClicked, secondClicked);
+
+    isWord(firstClicked, secondClicked, wordArray);
     firstClicked = "";
   }
 
 }
 
 //depending on the point (start or end), loops through the array of word
-//objects (wordArr) and returns those words matching the x and y coordinates
+//objects (wordArray) and returns those words matching the x and y coordinates
 // in the parameters.
-function filterCoord(wordArr, X, Y, point) {
+function filterCoord(wordArray, X, Y, point) {
     var returnArr = [];
-    for (var i = 0; i < wordArr.length; i++){
-        var word = wordArr[i];
+    for (var i = 0; i < wordArray.length; i++){
+        var word = wordArray[i];
         if (point === "start") {
             if ((word.startX == X) && (word.startY == Y)) {
                 returnArr.push(word);
@@ -211,22 +228,25 @@ function filterCoord(wordArr, X, Y, point) {
     return returnArr;
 }
 
-function winCondition(word) {
-    if (wordArr.length > 1) {
-        for (var i = 0; i < wordArr.length; i++) {
-            if (wordArr[i].word === word) {
-                wordArr.splice(i, 1);
-                console.log(wordArr);
+function winCondition(word, wordArray) {
+    console.log(wordArray);
+    if (wordArray.length > 1) {
+        for (var i = 0; i < wordArray.length; i++) {
+            if (wordArray[i].word === word) {
+                wordArray.splice(i, 1);
+
             }
         }
-        return;
+        console.log(wordArray);
+        return wordArray;
     } else {
+        console.log(wordArray);
     $("#fanfareoverlay").css("display", "block");
     $("#fanfarebox").css("display", "block");
 }
 }
 
-function isWord(firstClicked, secondClicked)
+function isWord(firstClicked, secondClicked, wordArray)
 {
     if (($("#"+firstClicked).hasClass("word_start") && $("#"+secondClicked).hasClass("word_end"))||($("#"+firstClicked).hasClass("word_end") && $("#"+secondClicked).hasClass("word_start")))
     {
@@ -243,39 +263,38 @@ function isWord(firstClicked, secondClicked)
             var endX = firstClicked[0];
             var endY = firstClicked[2];
         }
-        console.log("startX="+startX+", startY="+startY+", endX="+endX+", endY="+endY);
-        //make a double call to filterCoord
-        var wordObj = filterCoord(filterCoord(wordArr, startX, startY, "start"), endX, endY, "end");
+        //make a double call to filterCoord. Once for words that start at the same tile, once for the word that has
+        // the same end tile this assumes that there will never be two words with the same start and no words will
+        // repeat.
+        console.log("word array isWord: "+ wordArray, startX, startY);
+        var wordObj = filterCoord(filterCoord(wordArray, startX, startY, "start"), endX, endY, "end");
+
         var word = wordObj[0].word;
 
         console.log("Here's a word: " + word);
         $("." + word).addClass("found");
         $("#" + word).addClass("crossed-out");
 
-        winCondition(word);
+        winCondition(word, wordArray);
 
-        //this assumes that there will never be two words with the same start
-        //and no words will repeat.
+
     }
 }
 
-function selectTiles(){
-    console.log("selectTiles() called.")
-    var word = $("#"+this.id).html();
-    console.log("currentTile="+word);
-    // $("#"+this.id).html(word.toLowerCase());
+function requestKioskExtension(duration) {
+    window.parent.EventBus.pub("extend_current_asset", {time: duration });
 }
 
 
-
-$(function(){
-    buildGrid();
-    wordArr = buildWords(words);
-    placeWords(wordArr);
-    listWords(wordArr);
+$(function($){
+    buildGrid(gridSize, tileSize, fontSize, tileMargin);
+    buildWords(words, wordArray);
+    placeWords(wordArray);
+    listWords(wordArray);
     $(".card").click(function () {
-      console.log("currentTile="+this.id);
-      choose(this.id)
+        console.log("currentTile="+this.id);
+        requestKioskExtension(10000)
+        choose(this.id, wordArray);
     });
 });
 
