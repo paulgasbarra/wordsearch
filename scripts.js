@@ -2,123 +2,169 @@ function prerender(){location.reload()}
 function postrender(){}
 
 
-//var orientations = ["downstairs", "horizontal", "upstairs", "vertical"];
-//var orders = ["forwards", "reverse"];
+var orientations = ["downstairs", "horizontal", "upstairs", "vertical"];
+var orders = ["forwards", "forwards", "forwards","reverse"];
 var wordArray = [];
 
 //grid variables
 var gridSize = 6;
-var tileSize = 100;
-var fontSize = tileSize * 0.9;
-var tileMargin = 5;
 
 var firstClicked;
 var secondClicked;
 
 var words = [
-        ["bank", 0, 4, "horizontal"],
-        ["human", 0, 0, "horizontal"],
-        ["save", 5, 1, "vertical"],
-        ["app", 1, 1, "downstairs"],
-        ["always", 0, 5, "horizontal"],
-        ["open", 2, 1, "vertical"]
+    "BANK", "HUMAN", "APP", "SAVE", "ALWAYS", "OPEN"
 ];
 
-function randomLetter() {
-    var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    return alpha.charAt(Math.floor(Math.random() * alpha.length));
+var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+
+function randomPick(array){
+    return array[Math.floor(Math.random()*array.length)];
 }
 
-function buildGrid(gridSize, tileSize, fontSize, tileMargin) {
+function reverse(s){
+    var o = '';
+    for (var i = s.length - 1; i >= 0; i--)
+        o += s[i];
+    return o;
+}
+
+function buildGrid(gridSize) {
+
+    var tileSize = 100;
+    var fontSize = tileSize * 0.9;
+    var tileMargin = 5;
 
     var gameBoardWidth = (gridSize * tileSize) + (gridSize * (tileMargin*3)) + gridSize;
 
     var board = $(".game-board");
-        board.css("width", ""+gameBoardWidth+"px");
+    board.css("width", ""+gameBoardWidth+"px");
 
     for (var i = 0; i < gridSize; i++){
         for(var j = 0; j < gridSize; j++){
             var tileID = j + "_" + i;
-            board.append( "<div class=card id =" + tileID + " style = 'width: " + tileSize + "px; font-size: " + fontSize + "px'>"+randomLetter()+"</div>" );
+            board.append( "<div id =" + tileID + " class = 'card' style = 'width: " + tileSize + "px; font-size: " + fontSize + "px'>"+randomPick(alpha)+"</div>" );
         }
     }
 
 }
 
-function buildWord(word, wordArray){
-    //add gridsize argument when we have random builder function so we can place things. If that's what we want.
-    if (word.length != 4) {throw new Error("Not enough arguments in the word array."); return}
-
-    var startX = word[1];
-    var startY = word[2];
-    var orientation = word[3];
-    var incrementX, incrementY;
-    //var order = randomPick(orders);
-
+function setStartCoords(word, orientation){
+    var startX, startY, incrementX, incrementY;
 
     switch (orientation) {
         case "downstairs":
-            //startX = Math.floor(Math.random() * (gridSize - word.length));
-            //startY = Math.floor(Math.random() * (gridSize - word.length));
+            startX = Math.floor(Math.random() * (gridSize - (word.length-1)));
+            startY = Math.floor(Math.random() * (gridSize - (word.length-1)));
             incrementX = 1;
             incrementY = 1;
             break;
         case "horizontal":
-            //startX = Math.floor(Math.random() * (gridSize - word.length));
-            //startY = Math.floor(Math.random() * gridSize);
+            startX = Math.floor(Math.random() * (gridSize - word.length));
+            startY = Math.floor(Math.random() * gridSize);
             incrementX = 1;
             incrementY = 0;
             break;
         case "upstairs":
-            //startX = Math.floor(Math.random() * (gridSize - word.length + 1));
-            //startY = Math.floor(Math.random() * (gridSize - word.length + 1)) + word.length-1;
+            startX = Math.floor(Math.random() * (gridSize - word.length));
+            startY = gridSize - (Math.floor(Math.random() * (gridSize - word.length)))-1;
             incrementX = 1;
             incrementY = -1;
             break;
         case "vertical":
-            //startX = Math.floor(Math.random() * gridSize);
-            //startY = Math.floor(Math.random() * (gridSize - word.length));
+            startX = Math.floor(Math.random() * gridSize);
+            startY = Math.floor(Math.random() * (gridSize - word.length));
             incrementX = 0;
             incrementY = 1;
             break;
     }
 
-    wordArray.push({word: word[0], startX: startX, startY: startY, orientation: orientation, incrementX: incrementX, incrementY: incrementY});
+    return [startX, startY, incrementX, incrementY];
 
-    return wordArray;
+}
+
+function buildWord(word, wordArray){
+
+    var orientation = randomPick(orientations);
+    var order = randomPick(orders);
+    var coordinates = setStartCoords(word, orientation);
+
+    var newWord = {word: word, startX: coordinates[0], startY: coordinates[1], orientation: orientation, incrementX: coordinates[2], incrementY: coordinates[3], order: order};
+    return newWord;
 
 }
 
 function buildWords(words, wordArray){
     for (var i = 0; i < words.length; i++){
-        buildWord(words[i], wordArray);
+        var newWord = buildWord(words[i]);
+        wordArray.push(newWord);
     }
     return wordArray;
 }
 
+function conflictCheck(x, y, word, letter){
+    var tile = $("#" + x + "_" + y);
+    if (tile.hasClass("word")){
+
+        if (tile.html() === letter){
+            console.log("Placing " + word + ", encountered same letter at tile #" + x + "_" + y);
+            return false;
+        } else {
+            console.log("Conflict! placing " + word, "tileID: " + tile.attr('id'), "tileClass: " + tile.attr('class'), "letter: " + tile.html());
+            return true;
+        }
+
+    } else {
+        return false;
+    }
+}
+
+
+
 function placeWords(words){
     for (var i = 0; i < words.length; i++){
         var word = words[i];
-//        word.word = reverse(word.word);
+        var placeWord = word.word;
+        if (word.order === "reverse"){ placeWord = reverse(word.word); }
         var x = 0;
         var y = 0;
-        console.log(word)
+
         for (var j = 0; j < word.word.length; j++){
-            if (j === 0){
-                $('#' + (word.startX) + "_" + (word.startY)).addClass("word_start " + word.word);
-            } else if (j === word.word.length - 1) {
-                $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("word_end " + word.word);
-                word.endX = word.startX + x;
-                word.endY = word.startY + y;
-            } else {
-                $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("" + word.word + "");
+            var conflict = conflictCheck(word.startX + x, word.startY + y, placeWord, placeWord[j]);
+            if (conflict) {
+                words[i] = buildWord(words[i].word);
+                $( ".card" ).remove();
+                buildGrid(gridSize);
+                placeWords(words);
+                break;
             }
-            $('#' + (word.startX + x) + "_" + (word.startY + y)).html(word.word[j]);
+            else {
+
+                if (j === 0){
+
+                    $('#' + (word.startX) + "_" + (word.startY)).addClass("word_start word " + word.word);
+
+                } else if (j === word.word.length - 1) {
+
+                    $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass("word_end word " + word.word);
+                    word.endX = word.startX + x;
+                    word.endY = word.startY + y;
+
+                } else {
+
+                    $('#' + (word.startX + x) + "_" + (word.startY + y)).addClass(" word " + word.word);
+
+                }
+            }
+            $('#' + (word.startX + x) + "_" + (word.startY + y)).html(placeWord[j]);
             x = x + word.incrementX;
             y = y + word.incrementY;
         }
     }
+
 }
+
 
 function listWords(words){
     words.map(function (word) {
@@ -277,7 +323,6 @@ function isWord(firstClicked, secondClicked, wordArray)
 
         winCondition(word, wordArray);
 
-
     }
 }
 
@@ -287,16 +332,16 @@ function requestKioskExtension(duration) {
 
 
 $(function($){
-    buildGrid(gridSize, tileSize, fontSize, tileMargin);
+    buildGrid(gridSize);
     buildWords(words, wordArray);
     placeWords(wordArray);
     listWords(wordArray);
     $(".card").click(function () {
         console.log("currentTile="+this.id);
-        requestKioskExtension(10000)
         choose(this.id, wordArray);
     });
 });
+
 
 
 
